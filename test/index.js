@@ -1,93 +1,102 @@
 
 /* IMPORT */
 
-const fc = require ( 'fast-check' );
-const {describe} = require ( 'fava' );
-const {default: Hex} = require ( '../dist/node' );
-const Fixtures = require ( './fixtures' );
+import fc from 'fast-check';
+import {describe} from 'fava';
+import HexBrowser from '../dist/browser.js';
+import HexNode from '../dist/node.js';
+import Fixtures from './fixtures.js';
 
 /* MAIN */
 
-describe ( 'Hex', it => {
+describe ( 'Hex', () => {
 
-  it ( 'returns an actual Uint8Array', t => {
+  for ( const [Hex, name] of [[HexBrowser, 'browser'], [HexNode, 'node']] ) {
 
-    t.is ( Hex.decode ( 'ff' ).constructor, Uint8Array );
+    describe ( name, it => {
 
-  });
+      it ( 'returns an actual Uint8Array', t => {
 
-  it ( 'works with strings', t => {
+        t.is ( Hex.decode ( 'ff' ).constructor, Uint8Array );
 
-    for ( const fixture of Fixtures ) {
+      });
 
-      const encoded = Hex.encodeStr ( fixture );
-      const decoded = Hex.decodeStr ( encoded );
+      it ( 'works with strings', t => {
 
-      t.is ( decoded, fixture );
+        for ( const fixture of Fixtures ) {
 
-    }
+          const encoded = Hex.encodeStr ( fixture );
+          const decoded = Hex.decodeStr ( encoded );
 
-  });
+          t.is ( decoded, fixture );
 
-  it ( 'works with Uint8Arrays', t => {
+        }
 
-    const encoder = new TextEncoder ();
+      });
 
-    for ( const fixture of Fixtures ) {
+      it ( 'works with Uint8Arrays', t => {
 
-      const fixtureU8 = encoder.encode ( fixture );
+        const encoder = new TextEncoder ();
 
-      const encoded = Hex.encode ( fixtureU8 );
-      const decoded = Hex.decode ( encoded );
+        for ( const fixture of Fixtures ) {
 
-      t.deepEqual ( decoded, fixtureU8 );
+          const fixtureU8 = encoder.encode ( fixture );
 
-    }
+          const encoded = Hex.encode ( fixtureU8 );
+          const decoded = Hex.decode ( encoded );
 
-  });
+          t.deepEqual ( decoded, fixtureU8 );
 
-  it ( 'works with fc-generated strings', t => {
+        }
 
-    const assert = str => t.true ( !Hex.is ( str ) || ( Hex.decodeStr ( Hex.encodeStr ( str ) ) === str ) );
-    const property = fc.property ( fc.fullUnicodeString (), assert );
+      });
 
-    fc.assert ( property, { numRuns: 1000000 } );
+      it ( 'works with fc-generated strings', t => {
 
-  });
+        const assert = str => t.true ( !Hex.is ( str ) || ( Hex.decodeStr ( Hex.encodeStr ( str ) ) === str ) );
+        const property = fc.property ( fc.fullUnicodeString (), assert );
 
-  it ( 'works like Buffer', t => {
+        fc.assert ( property, { numRuns: 1000000 } );
 
-    const assert = str => Hex.is ( str ) ? t.deepEqual ( Hex.encodeStr ( str ), Buffer.from ( str ).toString ( 'hex' ) ) : t.pass ();
-    const property = fc.property ( fc.fullUnicodeString (), assert );
+      });
 
-    fc.assert ( property, { numRuns: 1000000 } );
+      it ( 'works like Buffer', t => {
 
-  });
+        const assert = str => Hex.is ( str ) ? t.deepEqual ( Hex.encodeStr ( str ), Buffer.from ( str ).toString ( 'hex' ) ) : t.pass ();
+        const property = fc.property ( fc.fullUnicodeString (), assert );
 
-  it ( 'can detect Hex-encoded strings', t => {
+        fc.assert ( property, { numRuns: 1000000 } );
 
-    const fixtures = [
-      ['', true],
-      ['a', false],
-      ['A', false],
-      ['ab', true],
-      ['AB', true],
-      ['abc', false],
-      ['ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/', false],
-      ['0123456789abcdef', true],
-      ['0123456789ABCDEF', true],
-      ['0123456789ABCdef', true],
-      ['\uffff\uffff\uffff\uffff', false],
-      ['😃', false],
-      ['👪', false]
-    ];
+      });
 
-    for ( const [fixture, result] of fixtures ) {
+      it ( 'can detect Hex-encoded strings', t => {
 
-      t.is ( Hex.is ( fixture ), result );
+        const fixtures = [
+          ['', true],
+          ['a', false],
+          ['A', false],
+          ['ab', true],
+          ['AB', true],
+          ['abc', false],
+          ['ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/', false],
+          ['0123456789abcdef', true],
+          ['0123456789ABCDEF', true],
+          ['0123456789ABCdef', true],
+          ['\uffff\uffff\uffff\uffff', false],
+          ['😃', false],
+          ['👪', false]
+        ];
 
-    }
+        for ( const [fixture, result] of fixtures ) {
 
-  });
+          t.is ( Hex.is ( fixture ), result );
+
+        }
+
+      });
+
+    });
+
+  }
 
 });
