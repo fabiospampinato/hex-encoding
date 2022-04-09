@@ -1,7 +1,7 @@
 
 /* IMPORT */
 
-import {Buffer} from 'node:buffer';
+import Buffer from 'node-buffer-encoding';
 import is from './is';
 
 /* MAIN */
@@ -12,27 +12,25 @@ const Node = {
 
   encode: ( data: Uint8Array ): string => {
 
-    return Buffer.from ( data ).toString ( 'hex' );
+    return Buffer.encode ( data, 'hex' );
 
   },
 
   encodeStr: ( data: string ): string => {
 
-    return Buffer.from ( data ).toString ( 'hex' );
+    return Buffer.encodeStr ( data, 'hex' );
 
   },
 
   decode: ( data: string ): Uint8Array => {
 
-    const buffer = Buffer.from ( data, 'hex' );
-
-    return new Uint8Array ( buffer.buffer, buffer.byteOffset, buffer.byteLength );
+    return Buffer.decode ( data, 'hex' );
 
   },
 
   decodeStr: ( data: string ): string => {
 
-    return Buffer.from ( data, 'hex' ).toString ();
+    return Buffer.decodeStr ( data, 'hex' );
 
   },
 
