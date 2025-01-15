@@ -8,10 +8,10 @@ import Hex from '../dist/node.js';
 
 /* HELPERS */
 
-const WAP = fs.readFileSync ( './tasks/fixture.txt', 'utf8' );
-const WAP_UINT8 = U8.encode ( WAP );
-const WAP_ENCODED = Hex.encodeStr ( WAP );
-const WAP_ENCODED_UINT8 = Hex.encode ( WAP_UINT8 );
+const FIXTURE = fs.readFileSync ( './tasks/fixture.txt', 'utf8' );
+const FIXTURE_UINT8 = U8.encode ( FIXTURE );
+const FIXTURE_ENCODED = Hex.encodeStr ( FIXTURE );
+const FIXTURE_ENCODED_UINT8 = Hex.encode ( FIXTURE_UINT8 );
 
 /* MAIN */
 
@@ -22,35 +22,35 @@ benchmark.config ({
 benchmark ({
   name: 'encode',
   fn: () => {
-    Hex.encode ( WAP_UINT8 );
+    Hex.encode ( FIXTURE_UINT8 );
   }
 });
 
 benchmark ({
   name: 'encodeStr',
   fn: () => {
-    Hex.encode ( WAP );
+    Hex.encode ( FIXTURE );
   }
 });
 
 benchmark ({
   name: 'decode',
   fn: () => {
-    Hex.decode ( WAP_ENCODED_UINT8 );
+    Hex.decode ( FIXTURE_ENCODED_UINT8 );
   }
 });
 
 benchmark ({
   name: 'decodeStr',
   fn: () => {
-    Hex.decode ( WAP_ENCODED );
+    Hex.decode ( FIXTURE_ENCODED );
   }
 });
 
 benchmark ({
   name: 'is',
   fn: () => {
-    Hex.is ( WAP_ENCODED );
+    Hex.is ( FIXTURE_ENCODED );
   }
 });
 
