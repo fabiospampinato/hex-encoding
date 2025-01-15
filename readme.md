@@ -7,7 +7,7 @@ If you can make this faster without using WASM or async stuff please ping me.
 ## Install
 
 ```sh
-npm install --save hex-encoding
+npm install hex-encoding
 ```
 
 ## Usage
